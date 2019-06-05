@@ -33,8 +33,8 @@ contract FlightSuretyApp {
     uint256 M ;
    
     event AirlineRegistered(string airline);
-  
-   event AirlineFunded(string msg);
+    event InsuranceStatus(string msg, uint val);
+    event AirlineFunded(string msg);
     event Log(uint256 valDiv, uint256 valN, uint256 valM, address airline,bool status);
 
   
@@ -80,6 +80,7 @@ contract FlightSuretyApp {
     constructor(address flightSuretyDataContract) public {
      contractOwner = msg.sender;
      flightSuretyData =   FlightSuretyData(flightSuretyDataContract);
+     registeredAirline[contractOwner] = true;
  
 
     }
@@ -208,16 +209,20 @@ contract FlightSuretyApp {
     }
 
     function buyInsurance(address airline, string calldata flight, uint256 timestamp) external payable {
-        require(registeredAirline[airline] ,"Airline is not registered so you cannot buy insurance");
+        uint amount;bool isRegistered;bool hasDeposited;
+        (isRegistered, hasDeposited, amount ) = flightSuretyData.getAirline(airline);
+     
+        require(isRegistered && hasDeposited ,"Airline is not registered so you cannot buy insurance");
         bytes32 key = getFlightKey(airline,flight,timestamp);
         if(msg.value > 1 ether){
             // Extra ethers to be transfered back to the sender
             msg.sender.transfer(msg.value - MAX_INSURANCE_FEE);            
             flightSuretyData.buy.value(MAX_INSURANCE_FEE)(key,msg.sender);
-        } else {
-             
+            
+        } else {             
              flightSuretyData.buy.value(msg.value)(key,msg.sender);
         }
+        emit InsuranceStatus("Insurance Bought ",msg.value);
     }
 
     function withdraw() external {
@@ -246,6 +251,7 @@ contract FlightSuretyApp {
         // flightSuretyData.flights[key].updatedTimestamp = timestamp;
         if(statusCode == STATUS_CODE_LATE_AIRLINE) {
             flightSuretyData.creditInsurees(key);
+            emit InsuranceStatus("Amount Credited to clients account ",0);
         }
 
     }
