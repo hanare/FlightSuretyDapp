@@ -62,14 +62,14 @@ contract('Oracles', async (accounts) => {
   it('can request flight status', async () => {
 
     // ARRANGE
-    let flight = 'ND1309'; // Course number
+    //let flight = 'ND1309'; // Course number
 
     let tx;
     const STATUS_CODE_LATE_AIRLINE = 20;
     // Submit a request for oracles to get status information for a flight
-    await config.flightSuretyApp.fetchFlightStatus(config.firstAirline, flight, timestamp);
+    tx = await config.flightSuretyApp.fetchFlightStatus(config.owner, flight, timestamp);
     // ACT
-
+    console.log("fetchFlightStatus",tx);
     // Since the Index assigned to each test account is opaque by design
     // loop through all the accounts and for each account, all its Indexes (indices?)
     // and submit a response. The contract will reject a submission if it was
@@ -83,8 +83,15 @@ contract('Oracles', async (accounts) => {
         try {
           // Submit a response...it will only be accepted if there is an Index match
           tx = await config.flightSuretyApp.submitOracleResponse(oracleIndexes[idx], config.owner, flight, timestamp, STATUS_CODE_LATE_AIRLINE, { from: accounts[a] });
+          
+          truffleAssert.eventEmitted(tx, 'FlightStatusInfo', (ev) => {
+            console.log(tx, "FlightStatusInfo   ", ev)
+            //return ev.address === txresult[i].logs[0].args.;
+            return true;
+          }, "Event:FlightStatusInfo failed");
+          
           truffleAssert.eventEmitted(tx, 'InsuranceStatus', (ev) => {
-            console.log(tx, "INSURANCE Paid ", ev)
+            console.log(tx, "InsuranceStatus   ", ev)
             //return ev.address === txresult[i].logs[0].args.;
             return true;
           }, "Event:InsuranceStatus failed");
