@@ -252,16 +252,18 @@ contract FlightSuretyData {
      *  @dev Transfers eligible payout funds to insuree
      *
     */
-    function pay(address insuree) internal
+    function pay(address  payable insuree) internal
     {
+        emit Log( 11,11,client[insuree].funds,insuree, true );
         require( client[insuree].funds > 0 ether,"Client not registered ");
-        msg.sender.transfer(client[insuree].funds);
+      
+        insuree.transfer(client[insuree].funds);
         emit InsuranceTransferedToClient("Amount transfered to client ", client[insuree].funds);
-        //emit Log( 1,N,M,contractOwner, true );
+       
         client[insuree].status = State.AmountTransfered;
     }
 
-    function getFunds(address insuree) external returns(uint256 amount) {
+    function getFunds(address payable insuree) external returns(uint256 amount) {
             pay(insuree);
             return client[insuree].funds;
     }

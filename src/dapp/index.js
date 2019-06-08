@@ -24,9 +24,26 @@ import './flightsurety.css';
             contract.fetchFlightStatus(flight, (error, result) => {
                 display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp} ]);
             });
-        })
- 
-    
+        });
+
+        // User-submitted transaction
+        DOM.elid('add-oracle').addEventListener('click', () => {
+            
+            // Write transaction
+            contract.registerOracle((error, result) => {
+                display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp} ]);
+            });
+        });
+
+        DOM.elid('withdraw-funds').addEventListener('click', () => {
+           
+            // Write transaction
+            contract.registerOracle(flight, (error, result) => {
+                display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp} ]);
+            });
+        });
+
+        
     });
     
 

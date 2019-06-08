@@ -10,6 +10,7 @@ contract('Oracles', async (accounts) => {
   var config;
   let timestamp = Math.floor(Date.now() / 1000);
   let flight = 'ND1309';
+  const clientAccount = accounts[10];
   before('setup contract', async () => {
     config = await Test.Config(accounts);
 
@@ -42,7 +43,7 @@ contract('Oracles', async (accounts) => {
     const insuranceFund = web3.utils.toWei("1", 'ether'); // 10 ether 
 
 
-    const clientAccount = accounts[10];
+    
     let tx, result;
     try {
       result = await config.flightSuretyApp.getAirline(config.owner);
@@ -54,7 +55,7 @@ contract('Oracles', async (accounts) => {
     }
     //console.log("tx log ",tx);
     truffleAssert.eventEmitted(tx, 'InsuranceStatus', (ev) => {
-      console.log(tx.logs[0], "INSURANCE ", ev)
+      //console.log(tx.logs[0], "INSURANCE ", ev)
       return ev.val.toString() === tx.logs[0].args.val.toString();
       //return true;
     }, "Event:InsuranceStatus failed");
@@ -69,11 +70,13 @@ contract('Oracles', async (accounts) => {
     // Submit a request for oracles to get status information for a flight
     tx = await config.flightSuretyApp.fetchFlightStatus(config.owner, flight, timestamp);
     // ACT
-    console.log("fetchFlightStatus",tx);
+    //console.log("fetchFlightStatus",tx);
     // Since the Index assigned to each test account is opaque by design
     // loop through all the accounts and for each account, all its Indexes (indices?)
     // and submit a response. The contract will reject a submission if it was
     // not requested so while sub-optimal, it's a good test of that feature
+
+    
     for (let a = 1; a < TEST_ORACLES_COUNT; a++) {
 
       // Get oracle information
@@ -85,15 +88,15 @@ contract('Oracles', async (accounts) => {
           tx = await config.flightSuretyApp.submitOracleResponse(oracleIndexes[idx], config.owner, flight, timestamp, STATUS_CODE_LATE_AIRLINE, { from: accounts[a] });
           
           truffleAssert.eventEmitted(tx, 'FlightStatusInfo', (ev) => {
-            console.log(tx, "FlightStatusInfo   ", ev)
-            //return ev.address === txresult[i].logs[0].args.;
-            return true;
+            //console.log(tx, "FlightStatusInfo   ", ev)
+            return ev.flight ===  flight && ev.status.toNumber() === 20;
+            //return true;
           }, "Event:FlightStatusInfo failed");
           
           truffleAssert.eventEmitted(tx, 'InsuranceStatus', (ev) => {
-            console.log(tx, "InsuranceStatus   ", ev)
-            //return ev.address === txresult[i].logs[0].args.;
-            return true;
+            //console.log(tx, "InsuranceStatus   ", ev)
+            return ev.msg === "Amount Credited to clients account";
+            
           }, "Event:InsuranceStatus failed");
         }
         catch (e) {
@@ -104,9 +107,24 @@ contract('Oracles', async (accounts) => {
       }
     }
 
+    const funding = web3.utils.toWei("10", 'ether'); 
+    txresult = await config.flightSuretyApp.fundAirline( accounts[2], { from:  accounts[2], value: funding });
+    txresult = await config.flightSuretyApp.airlineRegisteration(accounts[2], { from: config.owner });
+
+    const addr =  '0x43ba38c57B07C2BfD520444C18f032A6D7b1bc0F';     
+    //console.log( "contract balance ", web3.utils.fromWei(await web3.eth.getBalance(addr),"ether"))
+    const customerMoneyBefore = web3.utils.fromWei(await web3.eth.getBalance(clientAccount),"ether")
+    //  console.log("\nBalance before ",customerMoneyBefore);
+    tx = await config.flightSuretyApp.withdraw({from: clientAccount});
+    console.log(tx);
+    const customerMoneyAfter = web3.utils.fromWei(await web3.eth.getBalance(clientAccount),"ether")
+    //console.log("balance After: ",customerMoneyAfter,"\nbalance before ",customerMoneyBefore);
+    assert.equal(customerMoneyAfter>customerMoneyBefore,true,"Money transfer failed to the client ");
+   
+
 
   });
 
-
+  
 
 });

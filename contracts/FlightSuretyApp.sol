@@ -226,7 +226,9 @@ contract FlightSuretyApp {
     }
 
     function withdraw() external {
+        emit Log( 22,22,0,msg.sender, true );
         uint256 fund = flightSuretyData.getFunds(msg.sender);
+        emit Log( 33,33,fund,msg.sender, true );
         msg.sender.transfer(fund);
     }
     

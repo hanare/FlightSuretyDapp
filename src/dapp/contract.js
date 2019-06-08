@@ -54,4 +54,28 @@ export default class Contract {
                 callback(error, payload);
             });
     }
+
+    async registerOracle(callback) {
+        let self = this;
+        let fee = await self.flightSuretyApp.REGISTRATION_FEE.call();
+        self.flightSuretyApp.methods
+            .registerOracle().send({ from: self.owner, value: fee }, (error, result) => {
+                callback(error, fee);
+            });
+    }
+
+    async buyInsurance(airline,flight,insuranceFund,time, callback) {
+        let self = this;
+        let timestamp = Math.floor(Date(time) / 1000);
+        console.log("TIMESTAMP BUY INSURANCE ",timestamp);
+        let fee = await self.flightSuretyApp.REGISTRATION_FEE.call();
+        tx = await self.flightSuretyApp.buyInsurance(config.owner, flight, timestamp, { from: clientAccount, value: insuranceFund });
+
+        self.flightSuretyApp.methods
+            .buyInsurance().send({ from: self.owner, value: fee }, (error, result) => {
+                callback(error, fee);
+            });
+    }
+
+    
 }
