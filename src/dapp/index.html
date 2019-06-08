@@ -7,6 +7,8 @@
     <title>FlightSurety</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 
 <body>
@@ -26,7 +28,7 @@
 
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="#">FlightSurety</a>
-        <ul class="nav nav-pills">
+        <!-- <ul class="nav nav-pills">
             <li class=" active"> <a data-toggle="pill" class="white" href="#airline">Airline</a></li>
             <li class=""> <a data-toggle="pill" class="white" href="#customer">Customer</a></li>
             <li class=""> <a data-toggle="pill" class="white" href="#oracle">Oracle</a></li>
@@ -36,45 +38,108 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
             aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
-        </button>
+        </button> -->
     </nav>
 
 
 
 
-    <div class="tab-content">
-        <div id="airline" class="tab-pane fade in active">
-            <main class="container">
-                <div id="display-wrapper" class="top-20">
-                </div>
-                <div class="row top-20">
-                    <label class="form">Flight</label> <input type="text" id="flight-number">
-                    <btn class="btn btn-primary" id="submit-oracle">Submit to Oracles</btn>
-                </div>
-            </main>
+    <main class="container">
+        <div id="display-wrapper" class="top-20">
         </div>
-        <div id="customer" class="tab-pane fade ">
-            <main class="container">
-                <div id="display-wrapper" class="top-20">
+        <div class="row top-20">
+            <label class="form">Flight</label> <input type="text" id="flight-number">
+            <btn class="btn btn-primary" id="submit-oracle">Submit to Oracles</btn>
+        </div>
+        <div class="row top-20">
+            <label class="form">Airline</label>
+            <select name="flight-number" id="airline-number">
+                <option value="1">airline1</option>
+                <option value="2">airline2</option>
+                <option value="3">airline3</option>
+                <option value="4">airline4</option>
+            </select>
+            <label class="form">Flight Number</label>
+            <select name="flight-number" id="flight-number-buy">
+                <option value="ND160">ND160</option>
+                <option value="MN201">MN201</option>
+                <option value="F8211">F8211</option>
+                <option value="GQ784">GQ784</option>
+            </select>
+            <label class="form">Time </label>
+            <select name="flight-number" id="flight-time-buy">
+                <option value="05/07/2018">05/07/2019</option>
+                <option value="25/02/2019">25/02/2019</option>
+                <option value="20/06/2019">20/06/2019</option>
+                <option value="19/01/2019">19/01/2019</option>
+            </select>
+            <label class="form">Insurance Amount Paid</label><input type="text" id="insurance-amount">
+            <btn class="btn btn-primary" id="buy-insurance">Buy insurance</btn>
+        </div>
+        <div class="row top-20">
+            <label class="form">Flight Number</label>
+            <select name="flight-number" id="flight-number-status">
+                <option value="ND160">ND160</option>
+                <option value="MN201">MN201</option>
+                <option value="F8211">F8211</option>
+                <option value="GQ784">GQ784</option>
+            </select>
+
+            <btn class="btn btn-primary" id="get-flight-status">Get Status</btn>
+        </div>
+        <div class="row top-20">
+            <btn class="btn btn-primary" id="withdraw-funds">Withdraw funds</btn>
+        </div>
+
+    </main>
+    </div>
+    <!-- <div id="customer" class="tab-pane fade "> -->
+    <!-- <main class="container">
+                <div id="display-wrapper">
                 </div>
                 <div class="row top-20">
-                    <label class="form">Flight Number</label> <input type="text" id="flight-number">
-                    <label class="form">Time </label> <input type="time" id="flight-time">
+                        <label class="form">Airline</label>
+                        <select name="flight-number"  id="airline-number">
+                            <option value="1">airline1</option>
+                            <option value="2">airline2</option>
+                            <option value="3">airline3</option>
+                            <option value="4">airline4</option>
+                          </select>
+                    <label class="form">Flight Number</label>
+                    <select name="flight-number"  id="flight-number-buy">
+                        <option value="ND160">ND160</option>
+                        <option value="MN201">MN201</option>
+                        <option value="F8211">F8211</option>
+                        <option value="GQ784">GQ784</option>
+                      </select>
+                    <label class="form">Time </label>  
+                    <select name="flight-number"  id="flight-time-buy">
+                        <option value="05/07/2018">05/07/2019</option>
+                        <option value="25/02/2019">25/02/2019</option>
+                        <option value="20/06/2019">20/06/2019</option>
+                        <option value="19/01/2019">19/01/2019</option>
+                      </select>
                     <label class="form">Insurance Amount Paid</label><input type="text" id="insurance-amount">
                     <btn class="btn btn-primary" id="buy-insurance">Buy insurance</btn>
                 </div>
-                <div class="row top-20">
-                    <label class="form">Flight Number</label> <input type="text" id="flight-number"> 
-                    <label class="form">Time </label> <input type="time" id="flight-time">
+                <div class="row top-20">                        
+                    <label class="form">Flight Number</label>
+                    <select name="flight-number"  id="flight-number-status">
+                        <option value="ND160">ND160</option>
+                        <option value="MN201">MN201</option>
+                        <option value="F8211">F8211</option>
+                        <option value="GQ784">GQ784</option>
+                      </select>
+                   
                     <btn class="btn btn-primary" id="get-flight-status">Get Status</btn>
                 </div>
-                
-                <div class="row top-20">                                       
+                 -->
+    <!-- <div class="row top-20">                                       
                     <btn class="btn btn-primary" id="withdraw-funds">Withdraw funds</btn>
-                </div>
-            </main>
-        </div>
-        <div id="oracle" class="tab-pane fade ">
+                </div> -->
+    <!-- </main>
+        </div> -->
+    <!-- <div id="oracle" class="tab-pane fade ">
             <main class="container">
                 <div id="display-wrapper" class="">
                 </div>
@@ -82,9 +147,8 @@
                     <label class="form">Oracle</label>
                     <btn class="btn btn-primary" id="add-oracle">Add Oracles</btn>
                 </div>
-            </main>
-        </div>
-    </div>
+            </main> -->
+
 
 
 
@@ -97,6 +161,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 
 </body>
