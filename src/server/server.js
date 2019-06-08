@@ -10,11 +10,11 @@ const Config = require("./config.json");
 const Web3 = require('web3');
 let config = Config['localhost'];
 let web3 = new Web3(new Web3.providers.WebsocketProvider(config.url.replace('http', 'ws')));
-web3.eth.defaultAccount = web3.eth.accounts[0];
+
 let flightSuretyApp = new web3.eth.Contract(FlightSuretyApp.abi, config.appAddress);
 
 
-const TEST_ORACLES_COUNT = 21;
+const TEST_ORACLES_COUNT = 20;
 
 
 
@@ -33,27 +33,35 @@ app.get('/api', (req, res) => {
 })
 
 
-exports.register =  async function () {
-  const fee = web3.utils.toWei("1", 'ether'); 
+exports.register = async function () {
+  const fee = web3.utils.toWei("1", 'ether');
   //let fee = await flightSuretyApp.REGISTRATION_FEE.call();
-  console.log(flightSuretyApp.methods);
-  
+  //console.log(flightSuretyApp.methods);
+  const accounts = await web3.eth.getAccounts()
+  web3.eth.defaultAccount = accounts[0];
+
+  //console.log(web3.eth.defaultAccount);
   for (let a = 1; a < TEST_ORACLES_COUNT; a++) {
-    flightSuretyApp.options.address = web3.eth.accounts[a];
+    console.log(accounts[a]);
+
+    // flightSuretyApp.options.address = web3.eth.accounts[a];
     //     flightSuretyApp.methods.registerOracle()
     //  .send({ value: fee }, function (error,result){
     //     if(error){
     //       console.log("error",error);
     //     }
     // });
-    flightSuretyApp.methods
-            .registerOracle().send({ from: web3.eth.accounts[a], value: fee }, (error, result) => {
-              if(error){
-                      console.log("error",error);
-                    }
-            });
-    let result =  await flightSuretyApp.methods.getMyIndexes.call();
-    console.log(`Oracle Registered: ${result[0]}, ${result[1]}, ${result[2]}`);
+    const tx = await flightSuretyApp.methods
+      .registerOracle().send({ from: accounts[a], value: fee, gas: 2000000, gasPrice: 1 });
+
+    await flightSuretyApp.methods.getMyIndexes.call((error, result) => {
+      if (error) {
+        console.log("ERROR ", error)
+      } else {
+        console.log(`Oracle Registered: ${result[0]}, ${result[1]}, ${result[2]}`);
+      }
+    });
+
   }
 
 }

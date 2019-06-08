@@ -29,7 +29,7 @@ To view dapp:
 
 ## Develop Server
 
-`npm run server`
+`npm run server` OR `node index.js` in the src/server folder
 `truffle test ./test/oracles.js`
 
 ## Deploy

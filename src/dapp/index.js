@@ -8,23 +8,7 @@ import './flightsurety.css';
 (async() => {
 
     let result = null;
-    toastr.options = {
-        "closeButton": false,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": false,
-        "positionClass": "toast-top-right",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "5000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-      }
+ 
     let contract = new Contract('localhost', () => {
         
         // Read transaction
@@ -32,7 +16,24 @@ import './flightsurety.css';
             console.log(error,result);
             display('Operational Status', 'Check if contract is operational', [ { label: 'Operational Status', error: error, value: result} ]);
         });
-    
+        
+        DOM.elid('fund-airline').addEventListener('click', () => {
+            let airline =  DOM.elid('airline-number').value;
+            contract.fundAirline(airline,(error,result)=>{
+                console.log(error);
+                console.log("RESULT ",result);
+                display('Airline', 'FUNDING', [ { label: 'Airline registeration status', error: error} ]);
+            })
+        });
+
+        DOM.elid('add-airline').addEventListener('click', () => {
+            let airline =  DOM.elid('airline-number').value;
+            contract.airlineRegisteration(airline,(error,result)=>{
+                console.log(error);
+                console.log("RESULT ",result);
+                display('Airline', 'REGISTERATION', [ { label: 'Airline registeration status', error: error} ]);
+            })
+        });
 
         // User-submitted transaction
         DOM.elid('submit-oracle').addEventListener('click', () => {

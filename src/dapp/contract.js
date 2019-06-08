@@ -25,6 +25,7 @@ export default class Contract {
 
             while (this.airlines.length < 5) {
                 this.airlines.push(accts[counter++]);
+                console.log(this.arilines);
             }
 
             while (this.passengers.length < 5) {
@@ -66,7 +67,27 @@ export default class Contract {
                 callback(error);
             });
     }
-
+    
+    async fundAirline(airline,callback){
+        let self=this;
+        const AIRLINE = self.airlines[airline];
+        const funds = self.web3.utils.toWei('10', 'ether'); // 10 ether 
+        self.flightSuretyApp.methods.fundAirline(AIRLINE)
+        .send({from: AIRLINE, value: funds},(error,result)=>{
+            console.log("");
+            callback(error,funds);
+        });
+    }
+    async airlineRegisteration(airline,callback){
+        let self=this;
+        const AIRLINE = self.airlines[airline];
+        const funds = self.web3.utils.toWei('10', 'ether'); // 10 ether 
+        self.flightSuretyApp.methods.airlineRegisteration(AIRLINE)
+        .send({from: self.owner, value: funds},(error,result)=>{
+            console.log("");
+            callback(error,funds);
+        });
+    }
     async  buyInsurance(airline, flight, time, amount, callback) {
         let self = this;
         let timestamp = Math.floor(new Date(time) / 1000);
